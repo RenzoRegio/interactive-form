@@ -424,6 +424,7 @@ button:hover {
 
 .activities-hint {
   margin-top: 10px;
+  color: red;
 }
 
 /* ================================= 
@@ -640,6 +641,38 @@ button:hover {
   }
 }
 
-.notValidated {
-  border: 2px solid red;
+.box-validation {
+  border: 0.8px solid rgba(255, 75, 75, 0.733);
+}
+
+@keyframes errorMessage {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 50%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+.js-error-style {
+  display: none;
+  color: red;
+  animation: errorMessage 1.5s ease-in-out;
+  position: absolute;
+}
+
+.js-error-style::after {
+  content: " ";
+  position: absolute;
+  top: -5px;
+  right: -30px;
+  width: 25px;
+  height: 25px;
+  background-image: url("../img/not-valid.svg");
+  background-size: 25px;
+  transition: all 0.3s ease-out;
 }

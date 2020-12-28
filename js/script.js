@@ -1,23 +1,29 @@
 const nameField = document.querySelector('input[type="text"]');
+const email = document.querySelector("#email");
 const jobRoleOption = document.querySelector("#title");
 const otherJobRoleInput = document.querySelector("#other-job-role");
 const designSelect = document.querySelector("#design");
 const colorSelect = document.querySelector("#color");
-const activities = document.querySelector("#activities");
-const cc = document.querySelector('[value="credit-card"]');
+const activitiesContainer = document.querySelector("#activities");
+const activitiesCost = document.querySelector("#activities-cost");
 const payPalContainer = document.querySelector("#paypal");
 const bitCoinContainer = document.querySelector("#bitcoin");
 const creditCardContainer = document.querySelector("#credit-card");
 const paymentSelect = document.querySelector("#payment");
 const form = document.querySelector("[novalidate]");
-const email = document.querySelector("#email");
-const activitiesCost = document.querySelector("#activities-cost");
+const creditCardBox = document.querySelector(".credit-card-box");
+const zipNum = document.querySelector("#zip");
+const cvvNum = document.querySelector("#cvv");
+const ccNum = document.querySelector("#cc-num");
+const hints = document.querySelectorAll(".hint");
+
+let activitiesTotalCost = 0;
 
 window.onload = () => {
   nameField.focus();
   otherJobRoleInput.style.display = "none";
   colorSelect.parentNode.style.display = "none";
-  cc["selected"] = true;
+  document.querySelector('[value="credit-card"]')["selected"] = true;
   payPalContainer.style.display = "none";
   bitCoinContainer.style.display = "none";
 };
@@ -47,9 +53,12 @@ designSelect.addEventListener("change", (e) => {
   }
 });
 
-let value = 0;
+/**
+ *
+ */
 
-activities.addEventListener("change", (e) => {
+activitiesContainer.addEventListener("change", (e) => {
+  let clickedValue = parseInt(e.target.getAttribute("data-cost"));
   const activity = document.querySelectorAll("[data-day-and-time]");
   const selected = e.target.getAttribute("data-day-and-time");
   for (let i = 0; i < activity.length; i++) {
@@ -64,81 +73,151 @@ activities.addEventListener("change", (e) => {
       }
     }
   }
-  let currentValue = parseInt(e.target.getAttribute("data-cost"));
   if (e.target.checked) {
-    value += currentValue;
+    activitiesTotalCost += clickedValue;
   } else {
-    value -= currentValue;
+    activitiesTotalCost -= clickedValue;
   }
-  document.querySelector("#activities-cost").textContent = `Total: $${value}`;
+  activitiesCost.textContent = `Total: $${activitiesTotalCost}`;
 });
+
+/**
+ *
+ * @param {*} element
+ */
+
+function removeDisplay(element) {
+  element.style.display = "none";
+}
+
+function showDisplay(element) {
+  element.style.display = "";
+}
+
+/**
+ *
+ */
 
 paymentSelect.addEventListener("change", (e) => {
-  creditCardContainer.style.display = "";
-  payPalContainer.style.display = "none";
-  bitCoinContainer.style.display = "none";
-
+  showDisplay(creditCardContainer);
+  removeDisplay(payPalContainer);
+  removeDisplay(bitCoinContainer);
   if (e.target.value === "paypal") {
-    payPalContainer.style.display = "";
-    creditCardContainer.style.display = "none";
+    showDisplay(payPalContainer);
+    removeDisplay(creditCardContainer);
   }
   if (e.target.value === "bitcoin") {
-    bitCoinContainer.style.display = "";
-    creditCardContainer.style.display = "none";
+    showDisplay(bitCoinContainer);
+    removeDisplay(creditCardContainer);
   }
 });
 
-function validate() {
-  const regex = /^[^@]+@\w+\.\w+/;
-  return regex.test(email.value);
+/**
+ *
+ * @param {*} regex
+ * @param {*} element
+ */
+function regexValidation(regex, element) {
+  return regex.test(element.value);
 }
 
-function ccVal() {
-  const number = /^\d{13,16}$/;
-  const ccNum = document.querySelector("#cc-num");
-  return number.test(ccNum.value);
-}
+/**
+ *
+ */
 
-function zipVal() {
-  const number = /^\d{5}$/;
-  const zip = document.querySelector("#zip");
-  return number.test(zip.value);
-}
-
-function cvvVal() {
-  const number = /^\d{3}$/;
-  const cvv = document.querySelector("#cvv");
-  return number.test(cvv.value);
-}
 form.addEventListener("submit", (e) => {
+  function invalidate(element, num) {
+    element.parentNode.className = "not-valid";
+    element.className = "box-validation";
+    hints[num].classList.remove("hint");
+  }
+  function validate(element) {
+    element.parentNode.className = "valid";
+    element.className = "";
+    element.nextElementSibling.style.display = "none";
+  }
   e.preventDefault();
-  const emailValid = validate();
-  const ccNum = ccVal();
-  const zipValid = zipVal();
-  const cvvValid = cvvVal();
-  if (nameField.value === "") {
-    nameField.className = "notValidated";
+  const activityHeader = activitiesContainer.firstElementChild;
+  for (let i = 0; i < hints.length; i++) {
+    if (nameField.value === "") {
+      invalidate(nameField, 0);
+    } else {
+      validate(nameField);
+    }
+    if (!regexValidation(/^[^@]+@\w+\.\w+/, email)) {
+      invalidate(email, i);
+    } else {
+      validate(email, i);
+    }
+    if (activitiesCost.textContent === "Total: $0") {
+      activityHeader.className = "not-valid";
+      hints[i].classList.remove("hint");
+    } else {
+      activitiesCost.nextElementSibling.style.display = "none";
+      activityHeader.className = "valid";
+    }
+    if (!regexValidation(/^\d{13,16}$/, ccNum)) {
+      invalidate(ccNum, i);
+    } else {
+      validate(ccNum);
+    }
+    if (!regexValidation(/^\d{5}$/, zipNum)) {
+      invalidate(zipNum, i);
+    } else {
+      validate(zipNum);
+    }
+    if (!regexValidation(/^\d{3}$/, cvvNum)) {
+      invalidate(cvvNum, i);
+    } else {
+      validate(cvvNum);
+    }
   }
-  if (!emailValid) {
-    email.className = "notValidated";
+});
+
+/**
+ *
+ */
+
+const activitiesInput = document.querySelectorAll("input[type='checkbox']");
+for (let i = 0; i < activitiesInput.length; i++) {
+  activitiesInput[i].addEventListener("focus", (e) => {
+    e.target.parentNode.className = "focus";
+  });
+  activitiesInput[i].addEventListener("blur", () => {
+    activitiesInput[i].parentNode.className = "";
+  });
+}
+
+creditCardBox.addEventListener("keyup", () => {
+  const errorMessage = document.querySelectorAll(".js-error");
+  for (let i = 0; i < errorMessage.length; i++) {
+    if (isNaN(ccNum.value)) {
+      errorMessage[0].style.display = "block";
+    } else {
+      errorMessage[0].style.display = "none";
+    }
+    if (isNaN(zipNum.value)) {
+      errorMessage[1].style.display = "block";
+    } else {
+      errorMessage[1].style.display = "none";
+    }
+    if (isNaN(cvvNum.value)) {
+      errorMessage[2].style.display = "block";
+    } else {
+      errorMessage[2].style.display = "none";
+    }
   }
-  if (activitiesCost.textContent === "Total: $0") {
-    const activityHeader = activities.firstElementChild;
-    activityHeader.textContent = "*Please choose at least one activity*";
-    activityHeader.className = "not-valid";
-  }
-  if (!ccNum) {
-    const cc = document.querySelector("#cc-num");
-    cc.className = "notValidated";
-  }
-  if (!zipValid) {
-    const zip = document.querySelector("#zip");
-    zip.className = "notValidated";
-  }
-  if (!cvvValid) {
-    const cvv = document.querySelector("#cvv");
-    cvv.className = "notValidated";
+});
+
+/**
+ *
+ */
+
+email.addEventListener("keyup", () => {
+  const emailError = document.querySelector(".js-email");
+  if (!email.value.includes("@")) {
+    emailError.style.display = "block";
   } else {
-    cvv.className = "";
+    emailError.style.display = "none";
   }
 });
