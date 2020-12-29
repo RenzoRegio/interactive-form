@@ -60,23 +60,32 @@
             <label for="title">Job Role</label>
             <select id="title" name="user-title">
               <option hidden>Select Job Role</option>
-              <option value="full-stack js developer">
+              <option value="full-stack js developer" data-js>
                 Full Stack JavaScript Developer
               </option>
-              <option value="front-end developer">Front End Developer</option>
-              <option value="back-end developer">Back End Developer</option>
-              <option value="designer">Designer</option>
-              <option value="student">Student</option>
+              <option value="front-end developer" data-js>
+                Front End Developer
+              </option>
+              <option value="back-end developer" data-js>
+                Back End Developer
+              </option>
+              <option value="designer" data-js>Designer</option>
+              <option value="student" data-js>Student</option>
               <option value="other">Other</option>
             </select>
 
-            <input
-              type="text"
-              name="other-job-role"
-              id="other-job-role"
-              class="other-job-role"
-              placeholder="Other job role?"
-            />
+            <div>
+              <input
+                type="text"
+                name="other-job-role"
+                id="other-job-role"
+                class="other-job-role"
+                placeholder="Other job role?"
+              />
+              <span class="js-error-style js-other"
+                >Job role already exists in the options provided</span
+              >
+            </div>
           </fieldset>
 
           <fieldset class="shirts">

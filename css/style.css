@@ -676,3 +676,9 @@ button:hover {
   background-size: 25px;
   transition: all 0.3s ease-out;
 }
+
+.js-other {
+  position: absolute;
+  right: 80px;
+  bottom: 0px;
+}
