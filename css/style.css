@@ -663,18 +663,7 @@ button:hover {
   color: red;
   animation: errorMessage 1.5s ease-in-out;
   position: absolute;
-}
-
-.js-error-style::after {
-  content: " ";
-  position: absolute;
-  top: -5px;
-  right: -30px;
-  width: 25px;
-  height: 25px;
-  background-image: url("../img/not-valid.svg");
-  background-size: 25px;
-  transition: all 0.3s ease-out;
+  margin-bottom: 5px;
 }
 
 .js-other {

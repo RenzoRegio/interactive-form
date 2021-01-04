@@ -39,6 +39,9 @@
               <span id="name-hint" class="name-hint hint"
                 >Name field cannot be blank</span
               >
+              <span class="js-error-style js-name"
+                >Only use Letters, Numbers, Underscore, Hyphen</span
+              >
             </label>
 
             <label for="email"
@@ -53,7 +56,7 @@
                 >Email address must be formatted correctly</span
               >
               <span class="js-error-style js-email"
-                >Do not forget to add the "@" sign.</span
+                >(Example: user@blank.com)</span
               >
             </label>
 
@@ -82,9 +85,6 @@
                 class="other-job-role"
                 placeholder="Other job role?"
               />
-              <span class="js-error-style js-other"
-                >Job role already exists in the options provided</span
-              >
             </div>
           </fieldset>
 
@@ -303,7 +303,9 @@
                   <span id="cc-hint" class="cc-hint hint"
                     >Credit card number must be between 13 - 16 digits</span
                   >
-                  <span class="js-error js-error-style">Numbers Only</span>
+                  <span class="js-error js-error-style"
+                    >Numbers Only (13 - 16 digits)</span
+                  >
                 </label>
               </div>
 
@@ -319,7 +321,9 @@
                   <span id="zip-hint" class="zip-hint hint"
                     >Zip Code must be 5 digits</span
                   >
-                  <span class="js-error js-error-style">Numbers Only</span>
+                  <span class="js-error js-error-style"
+                    >Numbers Only (Exactly 5 digits)</span
+                  >
                 </label>
               </div>
 
@@ -335,7 +339,9 @@
                   <span id="cvv-hint" class="cvv-hint hint"
                     >CVV must be 3 digits</span
                   >
-                  <span class="js-error js-error-style">Numbers Only</span>
+                  <span class="js-error js-error-style"
+                    >Numbers Only (Exactly 3 digits)</span
+                  >
                 </label>
               </div>
             </div>
