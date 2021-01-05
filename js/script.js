@@ -99,7 +99,6 @@ activitiesContainer.addEventListener("change", (e) => {
   }
   activitiesCost.textContent = `Total: $${activitiesTotalCost}`;
 });
-
 /**
  * Select element for payment listens for a change event. When a change event occurs, certain payment methods are either shown or hidden.
  */
@@ -132,30 +131,30 @@ paymentSelect.addEventListener("change", (e) => {
  */
 
 function regexValidation(regex, element) {
-  //Validates if the input's value fulfills the regex parameter and returns true or false.
   return regex.test(element.value);
 }
 
 /**
- * Adds an error effect to the elements inside the function.
+ * For elements that returned false after regexValidation - provides the error layout for the specified element.
  * @param {*} element - An element passed on to the function which is then manipulated to add an error effect to the element and its correspondence.
  * @param {*} num - The number value which goes through the hints array and selects the hint specified by the number.
  */
 
-function invalidate(element, num) {
-  //For elements that returned false after regexValidation - provides the error layout for the specified element.
+function invalidate(element, num, value) {
   element.parentNode.className = "not-valid";
   element.className = "box-validation";
   hints[num].classList.remove("hint");
+  if (!isNaN(value)) {
+    document.documentElement.scrollTop = value;
+  }
 }
 
 /**
- * Adds a validation effect to the elements inside the function.
+ * For elements that returned true after regexValidation - provides the valid layout for the specified element.
  * @param {*} element - An element passed on to the function which is then manipulated to add a validation effect to the element and its correspondence.
  */
 
 function validate(element) {
-  //For elements that returned true after regexValidation - provides the valid layout for the specified element.
   element.parentNode.className = "valid";
   element.className = "";
   element.nextElementSibling.style.display = "none";
@@ -175,35 +174,36 @@ form.addEventListener("submit", (e) => {
       nameField.value === "" ||
       !regexValidation(/^[a-zA-Z0-9_-]*$/, nameField)
     ) {
-      invalidate(nameField, 0);
+      invalidate(nameField, 0, 0);
     } else {
       validate(nameField);
     }
     if (!regexValidation(/^[^@]+@\w+\.\w+/, email)) {
-      invalidate(email, i);
+      invalidate(email, i, 0);
     } else {
       validate(email);
     }
     if (activitiesCost.textContent === "Total: $0") {
       activityHeader.className = "not-valid";
       hints[i].classList.remove("hint");
+      document.documentElement.scrollTop = 0;
     } else {
       activitiesCost.nextElementSibling.style.display = "none";
       activityHeader.className = "valid";
       activityHeader.setAttribute("validated", "");
     }
     if (!regexValidation(/^\d{13,16}$/, ccNum)) {
-      invalidate(ccNum, i);
+      invalidate(ccNum, i, 0);
     } else {
       validate(ccNum);
     }
     if (!regexValidation(/^\d{5}$/, zipNum)) {
-      invalidate(zipNum, i);
+      invalidate(zipNum, i, 0);
     } else {
       validate(zipNum);
     }
     if (!regexValidation(/^\d{3}$/, cvvNum)) {
-      invalidate(cvvNum, i);
+      invalidate(cvvNum, i, 0);
     } else {
       validate(cvvNum);
     }
@@ -259,14 +259,14 @@ nameField.addEventListener("keyup", () => {
 });
 
 /**
- * Listens for the "keyup" event on the email' input value and if it does not include the @ symbol then it will display the custom error.
+ * Listens for the "keyup" event on the email' input value and if it does not pass the regexValidation test (does not return true) then it will display the custom error.
  */
 
 email.addEventListener("keyup", () => {
   const emailError = document.querySelector(".js-email");
   if (!regexValidation(/^[^@]+@\w+\.\w+/, email)) {
     emailError.style.display = "block";
-    invalidate(email, 1, emailError);
+    invalidate(email, 1);
   } else {
     emailError.style.display = "none";
     validate(email);
